@@ -4,11 +4,11 @@ import { allPosts } from "content-collections";
 const baseUrl = getBaseUrl();
 
 export default async function sitemap() {
-  // Content links from non-archived posts only
+  // Content links from non-archived blogs only
   const postLinks = allPosts
     .filter((post) => !post.archived)
     .map((post) => ({
-      url: `${baseUrl}/posts/${post.slug}`,
+      url: `${baseUrl}/blogs/${post.slug}`,
       lastModified: post.lastUpdated || post.date,
       changeFrequency: "weekly" as const,
       priority: 0.8,
@@ -17,11 +17,8 @@ export default async function sitemap() {
   // Static page links
   const pageLinks = [
     "",
-    "/about",
-    "/about/my-stack",
-    "/contact",
     "/projects",
-    "/posts",
+    "/blogs",
   ].map((url) => ({
     url: `${baseUrl}${url}`,
     lastModified: new Date(),

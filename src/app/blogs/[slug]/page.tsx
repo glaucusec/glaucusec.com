@@ -16,7 +16,7 @@ import { notFound } from "next/navigation";
 import { getBaseUrl } from "@/lib/utils";
 import { ClientTOC } from "./client-toc";
 
-// Generate static params for all posts
+// Generate static params for all blogs
 export function generateStaticParams() {
   return allPosts.map((post) => ({
     slug: post.slug,
@@ -34,7 +34,7 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Post Not Found",
+      title: "Blog Not Found",
     };
   }
 
@@ -159,10 +159,10 @@ export default async function PostPage({
           <header className="space-y-4">
             <nav className="text-sm text-muted-foreground">
               <Link
-                href="/posts"
+                href="/blogs"
                 className="hover:text-foreground transition-colors"
               >
-                Posts
+                Blogs
               </Link>
               <span className="mx-2">›</span>
               <span>{post.title}</span>

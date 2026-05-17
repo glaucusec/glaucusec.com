@@ -1,6 +1,8 @@
 "use client";
 
-import { Check, Copy, ExternalLink } from "lucide-react";
+import CopyIcon from "@/components/ui/copy-icon";
+import ExternalLinkIcon from "@/components/ui/external-link-icon";
+import { Check } from "lucide-react";
 import { useState } from "react";
 
 interface RawMarkdownProps {
@@ -28,12 +30,12 @@ export function RawMarkdown({ slug, content }: RawMarkdownProps) {
       </h3>
       <div className="space-y-2">
         <a
-          href={`/posts/${slug}.md`}
+          href={`/blogs/${slug}.md`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ExternalLink className="h-4 w-4" />
+          <ExternalLinkIcon size={16} />
           View raw markdown
         </a>
         <button
@@ -47,7 +49,7 @@ export function RawMarkdown({ slug, content }: RawMarkdownProps) {
             </>
           ) : (
             <>
-              <Copy className="h-4 w-4" />
+              <CopyIcon size={16} />
               Copy raw content
             </>
           )}

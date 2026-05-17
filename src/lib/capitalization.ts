@@ -14,9 +14,9 @@ const speciallyCapitalizedTitles = [
   "LLM",
 ];
 
-let capitalizationOptions: Record<string, string> = {};
+const capitalizationOptions: Record<string, string> = {};
 
-for (let title of speciallyCapitalizedTitles) {
+for (const title of speciallyCapitalizedTitles) {
   let escapedTitle = title.replace(/[\/\\^$*+?.()|[\]{}]/gi, "\\$&");
 
   escapedTitle = escapedTitle.replace(/[A-Za-z]/g, function (match) {

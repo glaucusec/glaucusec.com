@@ -22,6 +22,7 @@ const posts = defineCollection({
   directory: "content",
   include: "**/*.mdx",
   schema: z.object({
+    content: z.string(),
     title: z.string(),
     description: z.string(),
     date: z.string().pipe(z.coerce.date()),
@@ -60,7 +61,7 @@ const posts = defineCollection({
     // Calculate reading time
     const readingTimeStats = readingTime(document.content);
 
-    // Generate clean slug without folder prefixes (posts/, microblog/, etc.)
+    // Generate clean slug without folder prefixes (posts/, nextjs/, etc.)
     const fileName =
       document._meta.path
         .split(/[\\/]/)
@@ -73,7 +74,7 @@ const posts = defineCollection({
       toc: JSON.stringify(tocRoot || { children: [] }),
       readingTime: readingTimeStats.text,
       slug: fileName,
-      url: `/posts/${fileName}`,
+      url: `/blogs/${fileName}`,
       // Keep folder info for potential categorization
       folder: document._meta.path.match(/[\\/]/)
         ? document._meta.path.split(/[\\/]/)[0]
@@ -83,5 +84,5 @@ const posts = defineCollection({
 });
 
 export default defineConfig({
-  collections: [posts],
+  content: [posts],
 });

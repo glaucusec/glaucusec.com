@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Github, LinkIcon as LinkIconLucide } from "lucide-react";
+import GithubIcon from "@/components/ui/github-icon";
+import LinkIcon from "@/components/ui/link-icon";
 import Image from "next/image";
 
 interface Project {
@@ -82,7 +83,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/20 min-h-[2rem]">
           {primaryLink && (
             <div className="flex items-center space-x-1.5 text-xs text-muted-foreground flex-1 min-w-0 mr-2">
-              <LinkIconLucide className="h-3.5 w-3.5 shrink-0" />
+              <LinkIcon size={14} className="shrink-0" />
               <span className="truncate" title={primaryLink}>
                 {displayUrl}
               </span>
@@ -102,7 +103,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 rel="noopener noreferrer"
                 aria-label={`${project.title} GitHub repository`}
               >
-                <Github className="h-4 w-4" />
+                <GithubIcon size={16} />
               </a>
             </Button>
           )}

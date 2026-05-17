@@ -10,6 +10,7 @@ type Post = (typeof allPosts)[0] & {
 
 interface PostCardProps {
   post: Post;
+  variant?: "card" | "row";
 }
 
 // View transition style function (same as post page)
@@ -21,7 +22,7 @@ function getTransitionStyle(slug: string, prefix: string = "") {
   };
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, variant = "card" }: PostCardProps) {
   // Format date to readable string
   const formattedDate = post.date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -33,6 +34,43 @@ export function PostCard({ post }: PostCardProps) {
   const fallbackColors = getPostColors(post.title);
   const bgColor = post.color || fallbackColors.bg;
   const borderColor = post.borderColor || fallbackColors.border;
+
+  if (variant === "row") {
+    return (
+      <Link href={post.url} className="block group">
+        <article
+          className="py-6 transition-colors hover:bg-muted/40 sm:px-2"
+          style={getTransitionStyle(post.url, "post-card-")}
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+            <h3
+              className="text-xl font-semibold leading-snug text-foreground group-hover:underline"
+              style={getTransitionStyle(post.url, "title-")}
+            >
+              {post.title}
+            </h3>
+            <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground font-mono">
+              <time
+                dateTime={post.date.toISOString()}
+                style={getTransitionStyle(post.url, "date-")}
+              >
+                {formattedDate}
+              </time>
+              <span style={getTransitionStyle(post.url, "reading-time-")}>
+                {(post as any).readingTime || "5 min read"}
+              </span>
+            </div>
+          </div>
+          <p
+            className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground"
+            style={getTransitionStyle(post.url, "description-")}
+          >
+            {post.description}
+          </p>
+        </article>
+      </Link>
+    );
+  }
 
   return (
     <Link href={post.url}>

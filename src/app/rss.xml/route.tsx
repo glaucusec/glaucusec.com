@@ -38,8 +38,8 @@ const createFeed = async (renderToString: Function) => {
 
       feed.addItem({
         title: post.title,
-        id: `${baseUrl}/posts/${post.slug}`,
-        link: `${baseUrl}/posts/${post.slug}?utm_campaign=feed&utm_source=rss`,
+        id: `${baseUrl}/blogs/${post.slug}`,
+        link: `${baseUrl}/blogs/${post.slug}?utm_campaign=feed&utm_source=rss`,
         description: post.description,
         content: html,
         date: post.date,

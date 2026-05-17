@@ -1,7 +1,11 @@
 "use client";
 
 import { MobileThemeToggle } from "@/components/mobile-theme-toggle";
+import BookIcon from "@/components/ui/book-icon";
 import { Button } from "@/components/ui/button";
+import GithubIcon from "@/components/ui/github-icon";
+import HomeIcon from "@/components/ui/home-icon";
+import TwitterIcon from "@/components/ui/twitter-icon";
 import {
   Sheet,
   SheetContent,
@@ -9,58 +13,34 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Code,
-  FileText,
-  Home,
-  LucideProps,
-  Mail,
-  Menu,
-  User,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
+import type { ComponentType } from "react";
+import { useState } from "react";
 
-type NavigationType = (
-  | {
-      name: string;
-      href: string;
-      icon: ForwardRefExoticComponent<
-        Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-      >;
-      isSubItem?: undefined;
-      parent?: undefined;
-    }
-  | {
-      name: string;
-      href: string;
-      icon: ForwardRefExoticComponent<
-        Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-      >;
-      isSubItem: boolean;
-      parent: string;
-    }
-)[];
+type NavigationItem = {
+  name: string;
+  href: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+};
 
-const navigation: NavigationType = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: User },
+const navigation: NavigationItem[] = [
+  { name: "Home", href: "/", icon: HomeIcon },
+  { name: "Blogs", href: "/blogs", icon: BookIcon },
+];
+
+const socialLinks = [
   {
-    name: "My Stack",
-    href: "/about/my-stack",
-    icon: Code,
+    name: "GitHub",
+    href: "https://github.com/glaucusec",
+    icon: GithubIcon,
   },
-  // {
-  //   name: "My Stack",
-  //   href: "/about/my-stack",
-  //   icon: Code,
-  //   isSubItem: true,
-  //   parent: "About",
-  // },
-  // { name: "Projects", href: "/projects", icon: FolderOpen },
-  { name: "Posts", href: "/posts", icon: FileText },
-  { name: "Contact", href: "/contact", icon: Mail },
+  {
+    name: "Twitter",
+    href: "https://x.com/glaucusec",
+    icon: TwitterIcon,
+  },
 ];
 
 export function MobileNav() {
@@ -84,32 +64,40 @@ export function MobileNav() {
             {navigation.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href === "/posts" && pathname.startsWith("/posts/"));
+                (item.href === "/blogs" && pathname.startsWith("/blogs/"));
               return (
-                <div key={item.name} className="relative">
-                  {item.isSubItem && (
-                    <div className="absolute left-2 top-0 h-1/2 w-px bg-border/70"></div>
-                  )}
-                  {item.isSubItem && (
-                    <div className="absolute left-2 top-1/2 w-4 h-px bg-border/70"></div>
-                  )}
+                <div key={item.name}>
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                      item.isSubItem ? "ml-6" : ""
-                    } ${
+                    className={`group flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors ${
                       isActive
                         ? "bg-accent text-foreground"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                     }`}
                   >
-                    <item.icon className="h-4 w-4 shrink-0" />
+                    <item.icon size={20} className="shrink-0" />
                     {item.name}
                   </Link>
                 </div>
               );
             })}
+          </div>
+          <div className="flex items-center gap-1 border-t border-border/40 pt-4">
+            {socialLinks.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={item.href}
+                aria-label={item.href}
+                onClick={() => setOpen(false)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+              >
+                <item.icon size={20} className="shrink-0" />
+              </Link>
+            ))}
           </div>
           <div className="border-t border-border/40 pt-4">
             <MobileThemeToggle onThemeChange={() => setOpen(false)} />

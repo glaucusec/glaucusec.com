@@ -1,10 +1,9 @@
 import { PostCard } from "@/components/post-card";
-import { ProjectCard } from "@/components/project-card";
 import { Badge } from "@/components/ui/badge";
+import GithubIcon from "@/components/ui/github-icon";
+import TwitterIcon from "@/components/ui/twitter-icon";
 import { getPostColors } from "@/lib/colors";
-import { featuredProjects } from "@/lib/projects";
 import { allPosts } from "content-collections";
-import { ArrowRight, Github, Twitter } from "lucide-react";
 import Link from "next/link";
 
 type Post = (typeof allPosts)[0];
@@ -15,8 +14,7 @@ export default function HomePage() {
     .filter((post: Post) => !post.archived)
     .sort((a: Post, b: Post) => b.date.getTime() - a.date.getTime());
 
-  // Get the 3 most recent posts with consistent colors based on date-determined index
-  const recentPosts = sortedPosts.slice(0, 3).map((post) => {
+  const blogs = sortedPosts.map((post) => {
     const colors = getPostColors(post.slug);
     return {
       ...post,
@@ -44,7 +42,7 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Github className="h-4 w-4" />
+                <GithubIcon size={16} />
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
@@ -53,7 +51,7 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Twitter className="h-4 w-4" />
+                <TwitterIcon size={16} />
                 <span className="sr-only">Twitter</span>
               </Link>
             </div>
@@ -95,7 +93,7 @@ export default function HomePage() {
               </Link>{" "}
               I've worked on, or the{" "}
               <Link
-                href="/posts"
+                href="/blogs"
                 className="text-foreground hover:underline font-medium"
               >
                 blogs
@@ -106,34 +104,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Recent Posts Section */}
+      {/* Blogs Section */}
       <section>
-        <div className="space-y-4 mb-6 md:mb-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Recent Posts
-            </h2>
-            {allPosts.length > 3 && (
-              <Link
-                href="/posts"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
-              >
-                View all
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            )}
-          </div>
-          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            Thoughts on web development, web security, and building things that
-            matter.
-          </p>
+        <div className="space-y-3 mb-5 md:mb-6">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Blogs
+          </h2>
         </div>
-        <div className="@container">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {recentPosts.map((post: Post) => (
-              <PostCard key={post.slug} post={post} />
-            ))}
-          </div>
+        <div className="divide-y divide-border">
+          {blogs.map((post: Post) => (
+            <PostCard key={post.slug} post={post} variant="row" />
+          ))}
         </div>
       </section>
 

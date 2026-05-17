@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, Copy } from "lucide-react";
+import CopyIcon from "@/components/ui/copy-icon";
+import { Check } from "lucide-react";
 import { useState } from "react";
 
 export function CopyButton({ text }: { text: string }) {
@@ -22,7 +23,7 @@ export function CopyButton({ text }: { text: string }) {
       {copied ? (
         <Check className="h-4 w-4 text-green-500" />
       ) : (
-        <Copy className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+        <CopyIcon size={16} className="text-muted-foreground hover:text-foreground" />
       )}
     </button>
   );

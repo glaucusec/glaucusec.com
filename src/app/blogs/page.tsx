@@ -5,19 +5,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Posts - Abhishek Baiju",
+  title: "Blogs - Abhishek Baiju",
   description:
     "Thoughts on web development, web security, and building things that matter",
 };
 
-interface PostsPageProps {
+interface BlogsPageProps {
   searchParams: Promise<{ tag?: string }>;
 }
 
-export default async function PostsPage({ searchParams }: PostsPageProps) {
+export default async function BlogsPage({ searchParams }: BlogsPageProps) {
   const { tag: selectedTag } = await searchParams;
 
-  // Get all posts sorted by date
+  // Get all blogs sorted by date
   const sortedPosts = allPosts.sort(
     (a, b) => b.date.getTime() - a.date.getTime()
   );
@@ -46,7 +46,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
     return countDiff !== 0 ? countDiff : a.localeCompare(b);
   });
 
-  // Filter posts by tag and archived status
+  // Filter blogs by tag and archived status
   const filteredPosts = postsWithColors.filter((post) => {
     if (selectedTag && !post.tags.includes(selectedTag)) {
       return false;
@@ -57,11 +57,11 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   const archivedPosts = postsWithColors.filter((post) => post.archived);
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       <header className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            Posts
+            Blogs
           </h1>
           <Link
             href="/rss.xml"
@@ -94,8 +94,8 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
               key={tag}
               href={
                 selectedTag === tag
-                  ? "/posts"
-                  : `/posts?tag=${encodeURIComponent(tag)}`
+                  ? "/blogs"
+                  : `/blogs?tag=${encodeURIComponent(tag)}`
               }
               className={`inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                 selectedTag === tag
@@ -109,26 +109,24 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         </div>
       )}
 
-      {/* Regular Posts */}
+      {/* Regular Blogs */}
       <section>
-        <div className="@container">
-          <div className="grid gap-6 @md:grid-cols-2 @2xl:grid-cols-3">
-            {filteredPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
-            ))}
-          </div>
+        <div className="divide-y divide-border">
+          {filteredPosts.map((post) => (
+            <PostCard key={post.slug} post={post} variant="row" />
+          ))}
         </div>
         {filteredPosts.length === 0 && selectedTag && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
-              No posts found with tag{" "}
+              No blogs found with tag{" "}
               <span className="font-medium">#{selectedTag.toLowerCase()}</span>.
             </p>
           </div>
         )}
       </section>
 
-      {/* Archived Posts */}
+      {/* Archived Blogs */}
       {archivedPosts.length > 0 && !selectedTag && (
         <section>
           <div className="mb-6">
@@ -136,15 +134,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
               Archived
             </h2>
             <p className="text-muted-foreground">
-              Older posts that might be outdated but still have some value.
+              Older blogs that might be outdated but still have some value.
             </p>
           </div>
-          <div className="@container">
-            <div className="grid gap-6 @md:grid-cols-2 @2xl:grid-cols-3">
-              {archivedPosts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
+          <div className="divide-y divide-border">
+            {archivedPosts.map((post) => (
+              <PostCard key={post.slug} post={post} variant="row" />
+            ))}
           </div>
         </section>
       )}

@@ -3,26 +3,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Post Not Found - Abhishek Baiju",
-  description: "The post you're looking for doesn't exist.",
+  title: "Blog Not Found - Abhishek Baiju",
+  description: "The blog you're looking for doesn't exist.",
 };
 
-export default function PostNotFound() {
+export default function BlogNotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
       <div className="space-y-4">
         <h1 className="text-6xl font-bold text-muted-foreground">404</h1>
         <h2 className="text-3xl font-bold tracking-tight text-foreground">
-          Post Not Found
+          Blog Not Found
         </h2>
         <p className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
-          Sorry, the post you're looking for doesn't exist or has been moved.
+          Sorry, the blog you're looking for doesn't exist or has been moved.
         </p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 items-center">
         <Button asChild>
-          <Link href="/posts">Browse All Posts</Link>
+          <Link href="/blogs">Browse All Blogs</Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/">Go Home</Link>

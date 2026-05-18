@@ -1,0 +1,251 @@
+---
+title: "How I Set Up a Home Server with Docker, Tailscale, Pi-hole, Jellyfin and Immich"
+description: "How I turned an old PC into a self-hosted home server running Ubuntu Server, Docker, Pi-hole, Tailscale, Jellyfin, Immich, Gluetun, Nginx Proxy Manager, and more."
+date: "2026-05-19"
+tags: [homelab, home-server, self-hosting, docker, tailscale, pihole, jellyfin, immich]
+---
+
+I had an old PC sitting at home for years.
+
+It was not doing anything useful, but it was still a decent machine:
+
+- Intel i5 8400
+- 8 GB RAM
+- 256 GB SSD
+
+At some point I decided that instead of letting it sit there, I should turn it into a home server. I have always been curious about homelabbing, self-hosting, networking, reverse proxies, local DNS, media servers, VPNs, and all the small pieces that make a server feel like a real system. This felt like the right excuse to finally get into it.
+
+The goal was simple: keep everything practical, learn how the pieces work, and build something I would actually use.
+
+I used Google Gemini a lot during the setup, mostly as a debugging and planning companion while installing services and connecting the dots. The actual process was messy, with a lot of back and forth, but the server has now been running well for a few days.
+
+This is not a full tutorial. It is more of a write-up of how I set up my home server, what I am running on it, and the decisions I made along the way.
+
+## Getting the Hardware Ready
+
+The PC itself was usable, but the old PSU was not something I wanted to trust. It was noisy, old, and not certified, so I replaced it with a new one before doing anything serious.
+
+My ISP is Jio AirFiber, which means I am behind CGNAT. That one detail affected the whole setup. I could not simply open ports on my router and expose services directly to the internet. In hindsight, that was probably a good thing. It pushed me toward a safer setup where everything stays private and remote access goes through Tailscale instead.
+
+I installed Ubuntu Server on the machine, moved the cabinet near the router in the hall, connected it through Ethernet, and assigned it a static local IP. Once SSH worked from my laptop, the machine officially stopped being "that old PC" and became my server.
+
+For now, I decided not to use Proxmox. I only have 8 GB of RAM, and the setup is still small. I wanted fewer moving parts and more time actually learning the services. So I went with a Docker-first setup. Everything important runs as containers, mostly with separate `docker-compose.yml` files so each stack stays easy to understand and manage.
+
+## Pi-hole Was the First Service
+
+The first thing I installed was Pi-hole.
+
+Part of the reason was ad blocking and tracker blocking on the local network. But Pi-hole became more important later because it also works as my local DNS server.
+
+That means I can make internal domains like `files.glaucusec.com`, `affine.glaucusec.com`, or `linkwarden.glaucusec.com` point to my home server while I am on my own network. Instead of remembering IP addresses and ports, I can use proper domain names.
+
+I also set up Wake-on-LAN so I can turn the server on from another device on my local network without physically touching it. It is a small thing, but it makes the machine feel much more like infrastructure and less like a desktop PC hiding in the hall.
+
+## Adding Nginx Proxy Manager
+
+After Pi-hole, I installed Nginx Proxy Manager.
+
+When you start self-hosting apps, everything initially lives on a different port. Jellyfin might be on one port, Homarr on another, File Browser on another, and so on. That gets messy very quickly.
+
+Nginx Proxy Manager became the front door for the server. It listens on the standard HTTP and HTTPS ports, then routes requests to the right container based on the domain name.
+
+For example:
+
+- `files.glaucusec.com` goes to File Browser
+- `affine.glaucusec.com` goes to AFFiNE
+- `linkwarden.glaucusec.com` goes to Linkwarden
+
+One thing I had to fix early was port 80. Pi-hole's dashboard was using it, but Nginx Proxy Manager needs port 80 and 443 if it is going to act as the reverse proxy. So I moved the Pi-hole dashboard to a different port and gave Nginx Proxy Manager the standard web ports.
+
+That was one of the first moments where the setup started making sense in my head: Pi-hole acts like the local phonebook, and Nginx Proxy Manager acts like the receptionist that sends each request to the right app.
+
+## The Media Stack
+
+The next big thing I wanted was a proper media setup.
+
+I did not just want a folder full of files. I wanted something closer to a complete media system: discovery, requests, downloads, organization, metadata, posters, subtitles, and streaming.
+
+The stack I ended up with looks like this:
+
+- **Seerr** for discovering and requesting movies or shows
+- **Radarr** for movie automation
+- **Sonarr** for TV show automation
+- **Prowlarr** for indexer/search integration
+- **qBittorrent** as the downloader
+- **Jellyfin** as the media server and streaming app
+
+The flow is simple from my side. I can open Seerr, search for a movie or show, and request it. Radarr or Sonarr picks it up, Prowlarr helps search for it, qBittorrent downloads it, and Jellyfin makes it available to watch.
+
+Under the hood, I followed the TRaSH Guides style directory structure so hardlinks work properly. That keeps downloads and the final media library organized without wasting unnecessary disk space.
+
+For storage, the machine has a few drives:
+
+```txt
+sdd - 238.5G - Ubuntu OS and app data
+sda - 298.1G - Immich photos
+sdb - 465.8G - spare / future backup
+sdc - 232.9G - media, torrents, movies, TV
+```
+
+For the media drive, I created a structure like this:
+
+```txt
+/mnt/media_drive/data/torrents/movies
+/mnt/media_drive/data/torrents/tv
+/mnt/media_drive/data/media/movies
+/mnt/media_drive/data/media/tv
+```
+
+This made the media stack much cleaner. qBittorrent keeps downloads in the torrents folder, and Radarr/Sonarr organize the final library into the media folder.
+
+## Gluetun and VPN Only Where It Is Needed
+
+I also have a Proton VPN subscription, so I wanted to use it properly on the server.
+
+Instead of putting the entire server behind a VPN, I went with selective routing. Only the apps that actually need VPN protection go through it.
+
+For my setup, that mainly means:
+
+- qBittorrent
+- Prowlarr
+
+For this, I used [Gluetun](https://github.com/qdm12/gluetun). Gluetun runs as a Docker VPN client and supports multiple VPN providers, including Proton VPN. The nice part is that other containers can share Gluetun's network stack, so qBittorrent and Prowlarr can go through the VPN while the rest of the server stays normal.
+
+This makes more sense than routing everything through the VPN. Jellyfin, Pi-hole, Homarr, Nginx Proxy Manager, Immich, and the other apps do not need to hide behind a VPN, and forcing them through one would just create problems with access and speed.
+
+Another reason I liked Gluetun is that it comes with a built-in firewall kill switch. That means if the VPN tunnel is not available, the containers using Gluetun should not casually leak traffic through my normal connection.
+
+The other important safety step was binding qBittorrent to the VPN interface. Inside qBittorrent's advanced settings, I changed the network interface to `tun0`. That way, if the VPN tunnel goes down, qBittorrent should not silently fall back to my normal internet connection.
+
+That combination felt important: Gluetun as the VPN gateway and qBittorrent bound to the VPN interface. It is easy to install a VPN container and think everything is safe, but the real test is what happens when something fails.
+
+## Immich for Photos
+
+After the media stack, I set up Immich.
+
+This was one of the apps I was most excited about because it feels like a proper Google Photos replacement. It has automatic mobile backup, fast browsing, albums, metadata, and facial recognition. More importantly, the photos stay on my own drives.
+
+I gave Immich its own drive: `sda`, the 298 GB disk.
+
+That separation felt like the right decision. Movies and TV can grow fast, and I did not want a media download to accidentally eat the space meant for photos. So the layout became:
+
+- SSD for Ubuntu and app databases
+- HDD for media and torrents
+- Separate HDD for Immich photos
+- Spare HDD for future backup plans
+
+Immich is one of the heavier services in the whole setup, so keeping its storage separate also makes it easier to reason about later.
+
+## Homarr as the Dashboard
+
+Once more apps started running, I wanted a clean dashboard.
+
+I tried the idea of grouping everything into one compose file at first, but separating services into their own folders felt cleaner. Homarr got its own folder and its own `docker-compose.yml`.
+
+That modular approach has been useful. If I break the dashboard, the media stack does not care. If I restart Immich, Linkwarden does not care. Each part of the server feels a little more independent.
+
+Homarr is now the homepage for the homelab. I added all the important apps there, so I do not need to remember every service or port. I just open the dashboard and jump wherever I need to go.
+
+## Tailscale Made It Feel Local Everywhere
+
+Because my ISP uses CGNAT, I knew traditional port forwarding was not going to be the clean path. I also did not want to expose my home server directly to the public internet just to access it from outside.
+
+Tailscale ended up being the perfect answer for this.
+
+Once I installed Tailscale on the server, my laptop, and my mobile, all of them became part of the same private network. The coolest part is that I can now access the server from my laptop or phone even when I am away from home, and it still feels like I am sitting on my local network.
+
+That was a surprisingly satisfying moment. I could be on mobile data, open a service running at home, and it would just work through the encrypted Tailscale tunnel. No router port forwarding, no public exposure, and no fighting with CGNAT.
+
+For me, Tailscale changed the whole feel of the setup. The server stopped being something that only worked inside the house and became something I could securely carry with me.
+
+## Making My Domain Work Locally and Remotely
+
+One of the most satisfying parts of the setup was making my own domain work with the homelab.
+
+I own `glaucusec.com`, and the DNS is managed through Cloudflare. Because of CGNAT, I am not exposing my home server publicly through Cloudflare. Instead, I use the domain for clean internal names and SSL certificates, while access stays private.
+
+The local flow works like this:
+
+1. I type something like `files.glaucusec.com`.
+2. My device asks Pi-hole where that domain is.
+3. Pi-hole replies with the local IP of the server: `192.168.31.20`.
+4. The request reaches Nginx Proxy Manager.
+5. Nginx Proxy Manager forwards it to the correct container.
+
+For HTTPS, Nginx Proxy Manager handles Let's Encrypt certificates. Since the domain is managed through Cloudflare, certificates can be issued without exposing the server directly to the internet.
+
+That gave me clean URLs with HTTPS, but still only for my private setup.
+
+The next problem was remote access. At home, Pi-hole knows what `files.glaucusec.com` means. But outside the house, a coffee shop Wi-Fi network obviously does not know anything about my local DNS.
+
+Tailscale solved that.
+
+I configured the Ubuntu server as part of my Tailscale network and set up split DNS. For domains under `glaucusec.com`, my laptop sends DNS queries through Tailscale to the Pi-hole at home. For everything else, it uses the normal network DNS.
+
+So from outside my home, I can still open `https://files.glaucusec.com`, and the request travels through the Tailscale tunnel instead of the public internet.
+
+The rough flow is:
+
+```txt
+Laptop -> Tailscale -> Pi-hole -> Nginx Proxy Manager -> Docker app
+```
+
+This was the point where the server stopped feeling like a bunch of containers and started feeling like a real private platform.
+
+## What Is Running Now
+
+Right now, the server is running a mix of infrastructure, media, monitoring, file management, and productivity apps.
+
+Core infrastructure:
+
+- **Docker and Docker Compose** for running the services
+- **Tailscale** for private remote access and subnet routing
+- **Nginx Proxy Manager** for reverse proxying and HTTPS
+- **Pi-hole** for local DNS and network-wide blocking
+- **Gluetun** as the Proton VPN gateway for selected containers
+
+Media:
+
+- **qBittorrent** for downloads
+- **Prowlarr** for indexers
+- **Radarr** for movies
+- **Sonarr** for TV shows
+- **Seerr** for discovery and requests
+- **Jellyfin** for streaming
+
+Photos:
+
+- **Immich** for photo backup and browsing
+
+Monitoring and management:
+
+- **Homarr** as the central dashboard
+- **Dashdot** for hardware monitoring
+- **File Browser** at `files.glaucusec.com` for managing files through the browser
+
+Productivity and knowledge:
+
+- **AFFiNE** at `affine.glaucusec.com` as a workspace, document editor, and whiteboard
+- **Linkwarden** at `linkwarden.glaucusec.com` as a bookmark manager with archived copies, screenshots, and search
+
+It is not a huge enterprise setup, and that is exactly why I like it. It is small enough that I understand it, but useful enough that I actually use it.
+
+## What I Learned
+
+The biggest thing I learned is that a homelab is not one big project. It is many small pieces slowly clicking together.
+
+At first, I was just installing Ubuntu Server. Then I was learning SSH. Then Docker. Then local DNS. Then reverse proxying. Then SSL. Then storage mounts. Then VPN routing. Then Tailscale and split DNS.
+
+Each step made the previous step more useful.
+
+Pi-hole started as an ad blocker, then became local DNS. Nginx Proxy Manager started as a way to avoid ports, then became the HTTPS layer. Tailscale started as a remote access tool, then made the whole private domain setup work outside the house.
+
+I also learned that keeping things simple matters. I could have started with Proxmox, VLANs, Kubernetes, public tunnels, complicated backup systems, and a dozen other things. But for this first version, Docker on Ubuntu Server was enough.
+
+The server is still very much a work in progress. I need to think more seriously about backups, especially for Immich. The spare 500 GB drive will probably become part of that plan. I also want to keep improving monitoring and maybe clean up the compose files over time.
+
+But for now, I am happy with it.
+
+An old PC that was sitting unused is now running my DNS, media stack, photo backup, dashboard, file manager, bookmark archive, workspace, monitoring, and private remote access.
+
+That feels like a pretty good start.

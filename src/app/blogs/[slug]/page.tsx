@@ -4,48 +4,29 @@ import { mdxComponents } from "@/components/mdx-components";
 import { TOCNode } from "@/components/mdx/remark-toc";
 import { RawMarkdown } from "@/components/raw-markdown";
 import { Social } from "@/components/social";
-import { Badge } from "@/components/ui/badge";
 import { Typography } from "@/components/ui/typography";
-import { getPostColors } from "@/lib/colors";
+import { getBaseUrl } from "@/lib/utils";
 import { MDXContent } from "@content-collections/mdx/react";
 import { allPosts } from "content-collections";
 import type { Metadata } from "next";
-import { Link } from "next-view-transitions";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-
-import { getBaseUrl } from "@/lib/utils";
 import { ClientTOC } from "./client-toc";
 
-// Generate static params for all blogs
 export function generateStaticParams() {
-  return allPosts.map((post) => ({
-    slug: post.slug,
-  }));
+  return allPosts.map((post) => ({ slug: post.slug }));
 }
 
-// Generate metadata for each post
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = allPosts.find((p) => p.slug === slug);
-
-  if (!post) {
-    return {
-      title: "Blog Not Found",
-    };
-  }
-
-  // Clean URL construction using URLSearchParams
-  const ogParams = new URLSearchParams({
-    title: post.title,
-    description: post.description,
-    type: "post",
-  });
-  const ogImageUrl = `/og?${ogParams.toString()}`;
-
+  const post = allPosts.find((item) => item.slug === slug);
+  if (!post) return { title: "Blog Not Found" };
+  const og = `/og?${new URLSearchParams({ title: post.title, description: post.description, type: "post" })}`;
   return {
     title: post.title,
     description: post.description,
@@ -58,32 +39,29 @@ export async function generateMetadata({
       modifiedTime: post.lastUpdated?.toISOString() || post.date.toISOString(),
       authors: ["Abhishek Baiju"],
       tags: post.tags,
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
+      images: [{ url: og, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
       creator: "@glaucusec",
-      images: [ogImageUrl],
+      images: [og],
     },
   };
 }
 
-// View transition style function (same as old website)
-function getTransitionStyle(slug: string, prefix: string = "") {
-  const transitionName =
-    prefix + slug.replace(/[^\w\s\-\/]/gi, "").replace(/[\s\/]/g, "-");
-  return {
-    viewTransitionName: transitionName,
-  };
+function formatDate(date: Date) {
+  const day = date.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
+  return `${day}${suffix} ${date.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}`;
 }
 
 export default async function PostPage({
@@ -92,182 +70,110 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = allPosts.find((p) => p.slug === slug);
+  const post = allPosts.find((item) => item.slug === slug);
+  if (!post) notFound();
 
-  if (!post) {
-    notFound();
-  }
-
-  const colors = getPostColors(post.slug);
   const toc: TOCNode = JSON.parse(post.toc);
   const hasTOC = toc.children.length > 0;
-
-  // Format date to match post cards
-  const formattedDate = post.date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-
-  // JSON-LD for better SEO
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.description,
     image: [
-      `${getBaseUrl()}/og?title=${encodeURIComponent(
-        post.title
-      )}&description=${encodeURIComponent(post.description)}&type=post`,
+      `${getBaseUrl()}/og?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.description)}&type=post`,
     ],
     datePublished: post.date.toISOString(),
     dateModified: post.lastUpdated?.toISOString() || post.date.toISOString(),
-    author: [
-      {
-        "@type": "Person",
-        name: "Abhishek Baiju",
-        url: getBaseUrl(),
-      },
-    ],
+    author: [{ "@type": "Person", name: "Abhishek Baiju", url: getBaseUrl() }],
   };
 
   return (
-    <div className="space-y-8">
+    <article className="article-shell">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="grid lg:grid-cols-[250px_1fr] gap-8 items-start">
-        {/* Desktop TOC, Social, and Raw Markdown - Show on desktop only */}
-        <aside className="hidden lg:block sticky top-24">
-          <div className="space-y-6">
-            {hasTOC && (
-              <div className="bg-card border rounded-lg p-4">
-                <ClientTOC tree={toc} />
+
+      <div className="article-column">
+        <nav className="breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/">Home</Link>
+          <span>/</span>
+          <Link href="/blogs">Blog</Link>
+          <span>/</span>
+          <span>{post.title}</span>
+        </nav>
+
+        <header className="article-header">
+          <h1>
+            {post.title}
+            {post.archived && <span> (archived)</span>}
+          </h1>
+          <p className="article-deck">{post.description}</p>
+          <div className="article-byline">
+            <div className="author-line">
+              <Image
+                src="/abhishekbaiju.jpg"
+                alt="Abhishek Baiju"
+                width={38}
+                height={38}
+              />
+              <div>
+                <strong>Abhishek Baiju</strong>
+                <span>
+                  {post.lastUpdated
+                    ? `Updated ${formatDate(post.lastUpdated)} · `
+                    : ""}
+                  {formatDate(post.date)} · {post.readingTime || "5 min read"}
+                </span>
               </div>
-            )}
-            <div className="bg-card border rounded-lg p-4">
-              <Social title={post.title} />
             </div>
-            <div className="bg-card border rounded-lg p-4">
-              <RawMarkdown slug={post.slug} content={post.content} />
-            </div>
-          </div>
-        </aside>
-
-        <div className="min-w-0 space-y-8">
-          <header className="space-y-4">
-            <nav className="text-sm text-muted-foreground">
-              <Link
-                href="/blogs"
-                className="hover:text-foreground transition-colors"
-              >
-                Blogs
-              </Link>
-              <span className="mx-2">›</span>
-              <span>{post.title}</span>
-            </nav>
-
-            {/* Styled Post Header */}
-            <div
-              className={`${colors.bg} ${colors.border} border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg`}
-              style={getTransitionStyle(post.url, "post-card-")}
-            >
-              <div className="p-6 space-y-3">
-                <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono">
-                  <time
-                    dateTime={post.date.toISOString()}
-                    style={getTransitionStyle(post.url, "date-")}
+            {post.tags.length > 0 && (
+              <div className="article-tags">
+                {post.tags.map((tag) => (
+                  <Link
+                    href={`/blogs?tag=${encodeURIComponent(tag)}`}
+                    key={tag}
                   >
-                    {formattedDate}
-                  </time>
-                  <span>•</span>
-                  <span style={getTransitionStyle(post.url, "reading-time-")}>
-                    {(post as any).readingTime || "5 min read"}
-                  </span>
-                  {post.lastUpdated && (
-                    <>
-                      <span>•</span>
-                      <span>
-                        Updated{" "}
-                        {post.lastUpdated.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </>
-                  )}
-                </div>
-                <h1
-                  className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight group-hover:text-foreground/90 transition-colors break-words"
-                  style={getTransitionStyle(post.url, "title-")}
-                >
-                  {post.title}
-                  {post.archived && (
-                    <span className="text-muted-foreground"> (archived)</span>
-                  )}
-                </h1>
-              </div>
-              <div className="px-6 pb-6 space-y-4">
-                <p
-                  className="text-lg leading-relaxed text-muted-foreground max-w-3xl break-words"
-                  style={getTransitionStyle(post.url, "description-")}
-                >
-                  {post.description}
-                </p>
-                {post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {post.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="outline"
-                        className="text-xs px-2 py-0.5 bg-background/60 hover:bg-background/80 transition-colors"
-                        style={getTransitionStyle(`${post.url}-${tag}`, `tag-`)}
-                      >
-                        #{tag.toLowerCase()}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </header>
-
-          {/* Mobile TOC and Raw Markdown - Show before content on mobile */}
-          <div className="lg:hidden space-y-4">
-            {hasTOC && (
-              <div className="bg-card border rounded-lg p-4">
-                <ClientTOC tree={toc} />
+                    #{tag.toLowerCase()}
+                  </Link>
+                ))}
               </div>
             )}
-            <div className="bg-card border rounded-lg p-4">
-              <RawMarkdown slug={post.slug} content={post.content} />
-            </div>
           </div>
+        </header>
 
-          <main className="min-w-0">
-            <Typography className="text-lg">
-              <MDXContent code={post.mdx} components={mdxComponents} />
-            </Typography>
+        {hasTOC && (
+          <details className="mobile-article-toc">
+            <summary>
+              <span>On this page</span>
+              <small>{toc.children.length} sections</small>
+            </summary>
+            <ClientTOC tree={toc} />
+          </details>
+        )}
 
-            {/* Mobile Social - Show after content on mobile */}
-            <div className="lg:hidden mt-8">
-              <div className="bg-card border rounded-lg p-4">
-                <Social title={post.title} />
-              </div>
-            </div>
+        <Typography>
+          <MDXContent code={post.mdx} components={mdxComponents} />
+        </Typography>
 
-            {/* Comments */}
-            <div className="mt-12 pt-8 border-t">
-              <Comments />
-            </div>
-          </main>
+        <div className="article-utilities">
+          <RawMarkdown slug={post.slug} content={post.content} />
+          <Social title={post.title} />
+        </div>
+
+        <div className="comments-section">
+          <Comments />
         </div>
       </div>
 
-      {/* Floating ELI5 Button */}
+      {hasTOC && (
+        <aside className="article-toc">
+          <ClientTOC tree={toc} />
+        </aside>
+      )}
+
       <FloatingELI5 content={post.content} title={post.title} />
-    </div>
+    </article>
   );
 }

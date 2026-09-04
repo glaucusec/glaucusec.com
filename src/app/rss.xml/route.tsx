@@ -69,7 +69,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // Add XML stylesheet reference for better styling
     const updatedFeed = feed.replace(
       '<?xml version="1.0" encoding="utf-8"?>',
-      '<?xml version="1.0" encoding="UTF-8"?>\n<?xml-stylesheet type="text/xsl" href="/rss.xsl"?>'
+      '<?xml version="1.0" encoding="UTF-8"?>\n<?xml-stylesheet type="text/xsl" href="/rss.xsl"?>',
     );
 
     return new NextResponse(updatedFeed, {

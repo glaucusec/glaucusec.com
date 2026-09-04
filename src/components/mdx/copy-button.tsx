@@ -23,7 +23,10 @@ export function CopyButton({ text }: { text: string }) {
       {copied ? (
         <Check className="h-4 w-4 text-green-500" />
       ) : (
-        <CopyIcon size={16} className="text-muted-foreground hover:text-foreground" />
+        <CopyIcon
+          size={16}
+          className="text-muted-foreground hover:text-foreground"
+        />
       )}
     </button>
   );

@@ -40,12 +40,11 @@ const createHeaderComponent = (tagName: string) => {
           "a",
           {
             href: `#${id}`,
-            className:
-              "opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground ml-2 inline-block align-baseline",
+            className: "heading-anchor",
             "aria-label": `Link to section`,
           },
-          createElement(LinkIcon, { className: "h-4 w-4 flex-shrink-0" })
-        )
+          createElement(LinkIcon, { className: "h-4 w-4 flex-shrink-0" }),
+        ),
     );
   };
 };
@@ -84,10 +83,7 @@ const mdxComponents = {
 
     return (
       <div className="relative">
-        <pre
-          {...props}
-          className="border overflow-x-auto rounded-lg bg-muted/50 p-4 text-sm [&>code]:bg-transparent [&>code]:p-0"
-        >
+        <pre {...props} className="article-code">
           {rawString && <CopyButton text={rawString} />}
           {children}
         </pre>
@@ -100,14 +96,8 @@ const mdxComponents = {
     <code {...props}>{children}</code>
   ),
 
-  // Style blockquotes
   blockquote: ({ children, ...props }: CodeProps) => (
-    <blockquote
-      {...props}
-      className="border-l-4 border-border pl-4 italic text-muted-foreground"
-    >
-      {children}
-    </blockquote>
+    <blockquote {...props}>{children}</blockquote>
   ),
 
   // Override Image component to use Next.js Image

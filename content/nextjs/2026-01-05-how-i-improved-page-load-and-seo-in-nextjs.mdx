@@ -22,6 +22,7 @@ This article documents the **exact steps I followed**, why they mattered, and ho
 ## 1. Lazy Loading Components That Are Not Needed Immediately
 
 #### The Problem
+
 Not everything on a page needs to be loaded upfront.
 
 In my case, the homepage included:
@@ -47,12 +48,12 @@ import dynamic from "next/dynamic";
 
 const WhatsappMe = dynamic(
   () => import("@/app/home/hero/components/WhatsappMe"),
-  { ssr: false }
+  { ssr: false },
 );
 
 const BookAppointmentModal = dynamic(
   () => import("@/components/BookAppointmentModal"),
-  { ssr: false }
+  { ssr: false },
 );
 ```
 
@@ -299,7 +300,6 @@ Instead of showing blank screens, I focused on perceived performance.
 - Users see content immediately
 - App feels faster even if data is still loading
 - Reduced bounce rate
-
 
 ## 8. Optimizing Heavy Video Assets (HLS Streaming)
 

@@ -23,12 +23,12 @@ export function ClientTOC({ tree }: ClientTOCProps) {
       {
         rootMargin: "-20% 0% -35% 0%",
         threshold: 0,
-      }
+      },
     );
 
     // Observe all headings with IDs
     const headings = document.querySelectorAll(
-      "h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]"
+      "h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]",
     );
     headings.forEach((heading) => observer.observe(heading));
 
@@ -41,9 +41,7 @@ export function ClientTOC({ tree }: ClientTOCProps) {
 
   return (
     <div className="space-y-2">
-      <h3 className="font-semibold text-sm text-foreground">
-        Table of Contents
-      </h3>
+      <h3 className="font-semibold text-sm text-foreground">On this page</h3>
       <ul className="space-y-1">
         {tree.children.map((node) => (
           <li key={node.id}>

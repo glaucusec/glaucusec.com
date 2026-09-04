@@ -36,7 +36,7 @@ export function TOCLink({ node, activeSection }: TOCLinkProps) {
         node.depth === 3 && "pl-4",
         node.depth === 4 && "pl-8",
         node.depth === 5 && "pl-12",
-        node.depth === 6 && "pl-16"
+        node.depth === 6 && "pl-16",
       )}
     >
       {node.title}

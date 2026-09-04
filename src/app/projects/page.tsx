@@ -18,7 +18,6 @@ const projectsData = [
           "A super-fast embedded JS template engine that supports Deno.",
         tech: ["JavaScript", "TypeScript", "Template Engine"],
         links: {
-          
           github: "https://github.com/eta-dev/eta",
         },
         image: "eta.png",
@@ -30,7 +29,6 @@ const projectsData = [
           "A website for practicing Czech, Slovak, and Russian noun declensions.",
         tech: ["Next.js", "React", "TypeScript"],
         links: {
-          
           github: "https://github.com/glaucusec/declension-practice",
         },
         image: "decline.png",
@@ -42,7 +40,6 @@ const projectsData = [
           "Pip package with CLI tool to monitor GPU usage across Docker containers. A minimalistic alternative to 'nvidia-smi'.",
         tech: ["Python", "Docker", "CLI"],
         links: {
-          
           github: "https://github.com/glaucusec/gom",
         },
         image: "gom.png",
@@ -55,8 +52,7 @@ const projectsData = [
       {
         id: "4",
         title: "BlinkBuy",
-        description:
-          "BlinkBuy- An E-commerce Store ",
+        description: "BlinkBuy- An E-commerce Store ",
         tech: ["Nextjs", "Tailwind", "React"],
         links: {
           github: "https://github.com/glaucusec/BlinkBuy",
@@ -66,8 +62,7 @@ const projectsData = [
       {
         id: "5",
         title: "ClassiMail",
-        description:
-          "Emails with GPT-4 powered categorization 📧",
+        description: "Emails with GPT-4 powered categorization 📧",
         tech: ["Nextjs", "GPT-4o"],
         links: {
           github: "https://github.com/squirrellyjs/squirrelly",
@@ -84,7 +79,16 @@ const projectsData = [
         title: "Chat Application",
         description:
           "A Chrome extension that turns your new tab page into a customizable dashboard.",
-        tech: ["HTML", "CSS", "Bootstrap", "JavaScript", "Node Js", "Express Js", "MySQL", "Sequelize"],
+        tech: [
+          "HTML",
+          "CSS",
+          "Bootstrap",
+          "JavaScript",
+          "Node Js",
+          "Express Js",
+          "MySQL",
+          "Sequelize",
+        ],
         links: {
           github: "https://github.com/glaucusec/chat-application",
         },
@@ -101,7 +105,6 @@ const projectsData = [
         },
         image: "esperaboard.png",
       },
-     
     ],
   },
 ];
@@ -125,8 +128,8 @@ const projects = projectsData.map((section) => ({
 
 export default function ProjectsPage() {
   return (
-    <div className="space-y-12">
-      <header className="space-y-4">
+    <div className="projects-page">
+      <header className="index-header">
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
           Projects
         </h1>
@@ -137,12 +140,16 @@ export default function ProjectsPage() {
       </header>
 
       {projects.map((section) => (
-        <section key={section.category} className="space-y-6">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            {section.category}
-          </h2>
-          <div className="@container">
-            <div className="grid gap-8 @lg:grid-cols-2 @2xl:grid-cols-3">
+        <section key={section.category} className="project-section">
+          <div className="project-section-head">
+            <h2>{section.category}</h2>
+            <span>
+              {section.items.length}{" "}
+              {section.items.length === 1 ? "project" : "projects"}
+            </span>
+          </div>
+          <div>
+            <div className="grid gap-3 sm:grid-cols-2">
               {section.items.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}

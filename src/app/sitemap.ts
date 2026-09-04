@@ -15,11 +15,7 @@ export default async function sitemap() {
     }));
 
   // Static page links
-  const pageLinks = [
-    "",
-    "/projects",
-    "/blogs",
-  ].map((url) => ({
+  const pageLinks = ["", "/projects", "/blogs"].map((url) => ({
     url: `${baseUrl}${url}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,

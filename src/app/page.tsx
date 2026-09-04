@@ -1,150 +1,144 @@
-import { PostCard } from "@/components/post-card";
-import { Badge } from "@/components/ui/badge";
 import GithubIcon from "@/components/ui/github-icon";
 import TwitterIcon from "@/components/ui/twitter-icon";
-import { getPostColors } from "@/lib/colors";
+import { featuredProjects } from "@/lib/projects";
 import { allPosts } from "content-collections";
+import Image from "next/image";
 import Link from "next/link";
 
-type Post = (typeof allPosts)[0];
+function formatDate(date: Date) {
+  const day = date.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
+  return `${day}${suffix} ${date.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}`;
+}
 
 export default function HomePage() {
-  // Get all posts sorted by date for consistent color assignment
-  const sortedPosts = allPosts
-    .filter((post: Post) => !post.archived)
-    .sort((a: Post, b: Post) => b.date.getTime() - a.date.getTime());
-
-  const blogs = sortedPosts.map((post) => {
-    const colors = getPostColors(post.slug);
-    return {
-      ...post,
-      color: colors.bg,
-      borderColor: colors.border,
-    };
-  });
+  const posts = allPosts
+    .filter((post) => !post.archived)
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 
   return (
-    <div className="space-y-12 md:space-y-16">
-      {/* Hero Section */}
-      <section>
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Hello! Namaste! 👋
-            </h1>
-            <div className="flex items-center space-x-3">
-              <Badge className="text-xs px-2 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/30">
-                Currently building and breaking
-              </Badge>
-              <Link
-                href="https://github.com/glaucusec"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <GithubIcon size={16} />
-                <span className="sr-only">GitHub</span>
-              </Link>
-              <Link
-                href="https://x.com/glaucusec"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <TwitterIcon size={16} />
-                <span className="sr-only">Twitter</span>
-              </Link>
-            </div>
-          </div>
-          <div className="space-y-6">
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              I'm Abhishek (or on GitHub,{" "}
-              <Link
-                href="https://github.com/glaucusec"
-                className="text-foreground hover:underline font-medium"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                @glaucusec
-              </Link>
-              ).
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              I'm a developer focused on building websites and exploring web
-              technologies. My core interest lies at the intersection of web
-              development and web security. I enjoy creating functional,
-              efficient web experiences while continually learning how to make
-              them more secure.
-            </p>
-            {/* <p className="text-lg text-muted-foreground leading-relaxed">
-              Feel free to take a look at{" "} */}
-            {/* <Link
-                href="/resume"
-                className="text-foreground hover:underline font-medium"
-              >
-                résumé
-              </Link> */}
-            {/* some of the{" "}
-              <Link
-                href="/projects"
-                className="text-foreground hover:underline font-medium"
-              >
-                projects
-              </Link>{" "}
-              I've worked on, or the{" "}
-              <Link
-                href="/blogs"
-                className="text-foreground hover:underline font-medium"
-              >
-                blogs
-              </Link>{" "}
-              I've written.
-            </p> */}
-          </div>
-        </div>
-      </section>
+    <div className="home-page">
+      <header id="about" className="profile-hero">
+        <Image
+          src="/abhishekbaiju.jpg"
+          alt="Abhishek Baiju"
+          width={600}
+          height={740}
+          priority
+          className="profile-photo"
+        />
+        <div className="profile-copy">
+          <h1>Hey, I’m Abhishek.</h1>
+          <p>I’m a developer focused on building for the web.</p>
+          <p>
+            Online, I’m usually{" "}
+            <Link href="https://github.com/glaucusec">@glaucusec</Link>. I build
+            functional, efficient websites and spend a lot of time figuring out
+            how to make them safer.
+          </p>
+          <p>
+            My core interest sits at the intersection of{" "}
+            <strong>web development</strong> and web security. I write about
+            what I learn while building, breaking, and putting things back
+            together.
+          </p>
+          <p>I’m currently studying AI and human languages at BYU.</p>
 
-      {/* Blogs Section */}
-      <section>
-        <div className="space-y-3 mb-5 md:mb-6">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Blogs
-          </h2>
-        </div>
-        <div className="divide-y divide-border">
-          {blogs.map((post: Post) => (
-            <PostCard key={post.slug} post={post} variant="row" />
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Projects Section */}
-      {/* <section>
-        <div className="space-y-4 mb-6 md:mb-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Featured Projects
-            </h2>
+          <div className="social-row">
             <Link
-              href="/projects"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+              href="https://github.com/glaucusec"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              View all
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              <GithubIcon size={20} />
+              <span>GitHub</span>
+            </Link>
+            <Link
+              href="https://x.com/glaucusec"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TwitterIcon size={18} />
+              <span>X / Twitter</span>
             </Link>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            A selection of recent work and experiments.
-          </p>
         </div>
-        <div className="@container">
-          <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
-            {featuredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
+      </header>
+
+      <section className="home-section">
+        <div className="section-heading">
+          <h2>Latest writing</h2>
+          <span>Notes on development, security, and the web</span>
         </div>
-      </section> */}
+        <ul className="writing-list">
+          {posts.slice(0, 5).map((post) => (
+            <li key={post.slug}>
+              <Link href={post.url} className="writing-row">
+                <span className="writing-title">{post.title}</span>
+                <time dateTime={post.date.toISOString()}>
+                  {formatDate(post.date)}
+                </time>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <Link href="/blogs" className="all-link">
+          All writing →
+        </Link>
+      </section>
+
+      <section className="home-section">
+        <div className="section-heading">
+          <h2>What I’m building</h2>
+          <span>Open-source tools and useful experiments</span>
+        </div>
+        <div className="building-grid">
+          {featuredProjects.map((project) => {
+            const href = project.links.demo || project.links.github;
+            return (
+              <article className="building-card" key={project.id}>
+                <Image
+                  src={`/project-images/${project.image}`}
+                  alt=""
+                  width={72}
+                  height={72}
+                  className="building-icon"
+                />
+                <div>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  {href && (
+                    <Link href={href} target="_blank" rel="noopener noreferrer">
+                      Visit project →
+                    </Link>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+        <Link href="/projects" className="all-link">
+          All projects →
+        </Link>
+      </section>
+
+      <section className="home-section rss-section">
+        <h2>Follow along</h2>
+        <p>
+          New articles about the web, the things I build, and what I learn along
+          the way.
+        </p>
+        <Link href="/rss.xml" className="ink-button" target="_blank">
+          Subscribe via RSS →
+        </Link>
+      </section>
     </div>
   );
 }

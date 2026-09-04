@@ -58,7 +58,7 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
     } catch (error) {
       console.error("Error getting explanation:", error);
       setExplanation(
-        "Sorry, I couldn't explain this right now. Please try again!"
+        "Sorry, I couldn't explain this right now. Please try again!",
       );
     } finally {
       setIsExplaining(false);
@@ -77,7 +77,7 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
       <DialogTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg"
+          className="eli5-button fixed bottom-6 right-6"
           title="Explain Like I'm 5"
         >
           <Brain className="h-5 w-5" />
@@ -105,7 +105,7 @@ export function FloatingELI5({ content, title }: FloatingELI5Props) {
                     .split("\n")
                     .map(
                       (paragraph, index) =>
-                        paragraph.trim() && <p key={index}>{paragraph}</p>
+                        paragraph.trim() && <p key={index}>{paragraph}</p>,
                     )}
                   {isExplaining && (
                     <span className="inline-block w-2 h-4 bg-foreground animate-pulse ml-1" />

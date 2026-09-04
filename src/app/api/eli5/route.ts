@@ -26,8 +26,8 @@ Title: "${title}"`;
       messages: [
         { role: "system", content: systemPrompt },
         {
-          role: "user", 
-          content: `Please explain this blog post in simple terms:\n\n${content}`
+          role: "user",
+          content: `Please explain this blog post in simple terms:\n\n${content}`,
         },
       ],
       temperature: 0.7,
@@ -37,8 +37,8 @@ Title: "${title}"`;
   } catch (error) {
     console.error("ELI5 API Error:", error);
     return new Response(
-      "Sorry, I couldn't explain this right now. Please try again!", 
-      { status: 500 }
+      "Sorry, I couldn't explain this right now. Please try again!",
+      { status: 500 },
     );
   }
 }

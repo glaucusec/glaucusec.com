@@ -30,7 +30,7 @@ export function RawMarkdown({ slug, content }: RawMarkdownProps) {
       </h3>
       <div className="space-y-2">
         <a
-          href={`/blogs/${slug}.md`}
+          href={`/api/posts/${slug}/raw`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"

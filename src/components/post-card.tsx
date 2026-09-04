@@ -37,19 +37,19 @@ export function PostCard({ post, variant = "card" }: PostCardProps) {
 
   if (variant === "row") {
     return (
-      <Link href={post.url} className="block group">
+      <Link href={post.url} className="post-row group">
         <article
-          className="py-6 transition-colors hover:bg-muted/40 sm:px-2"
+          className="post-row-inner"
           style={getTransitionStyle(post.url, "post-card-")}
         >
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+          <div className="post-row-topline">
             <h3
-              className="text-xl font-semibold leading-snug text-foreground group-hover:underline"
+              className="post-row-title"
               style={getTransitionStyle(post.url, "title-")}
             >
               {post.title}
             </h3>
-            <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground font-mono">
+            <div className="post-row-meta">
               <time
                 dateTime={post.date.toISOString()}
                 style={getTransitionStyle(post.url, "date-")}
@@ -62,7 +62,7 @@ export function PostCard({ post, variant = "card" }: PostCardProps) {
             </div>
           </div>
           <p
-            className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground"
+            className="post-row-description"
             style={getTransitionStyle(post.url, "description-")}
           >
             {post.description}

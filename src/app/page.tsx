@@ -104,13 +104,15 @@ export default function HomePage() {
             const href = project.links.demo || project.links.github;
             return (
               <article className="building-card" key={project.id}>
-                <Image
-                  src={`/project-images/${project.image}`}
-                  alt=""
-                  width={72}
-                  height={72}
-                  className="building-icon"
-                />
+                {project.image && (
+                  <Image
+                    src={`/project-images/${project.image}`}
+                    alt=""
+                    width={72}
+                    height={72}
+                    className="building-icon"
+                  />
+                )}
                 <div>
                   <h3>{project.title}</h3>
                   <p>{project.description}</p>

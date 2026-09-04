@@ -1,40 +1,24 @@
 import { getColorByIndex } from "./colors";
 
-const featuredProjectsData = [
+interface FeaturedProject {
+  id: string;
+  title: string;
+  description: string;
+  tech: string[];
+  links: { github?: string; demo?: string };
+  image?: string;
+}
+
+const featuredProjectsData: FeaturedProject[] = [
   {
     id: "1",
-    title: "Eta",
-    description: "A super-fast embedded JS template engine that supports Deno.",
-    tech: ["JavaScript", "TypeScript", "Template Engine"],
-    links: {
-      demo: "https://eta.js.org",
-      github: "https://github.com/eta-dev/eta",
-    },
-    image: "eta.png",
-  },
-  {
-    id: "2",
-    title: "Decline App",
+    title: "Awesome Repos",
     description:
-      "A website for practicing Czech, Slovak, and Russian noun declensions.",
-    tech: ["Next.js", "React", "TypeScript"],
+      "A curated collection of repositories, links, payloads, blogs, and tools for pentesting and bug bounty hunting.",
+    tech: ["Security", "Pentesting", "Bug Bounty"],
     links: {
-      demo: "https://decline.vercel.app/",
-      github: "https://github.com/glaucusec/declension-practice",
+      github: "https://github.com/glaucusec/awesome-repos",
     },
-    image: "decline.png",
-  },
-  {
-    id: "3",
-    title: "GOM",
-    description:
-      "Pip package with CLI tool to monitor GPU usage across Docker containers. A minimalistic alternative to 'nvidia-smi'.",
-    tech: ["Python", "Docker", "CLI"],
-    links: {
-      demo: "https://pypi.org/project/gom/",
-      github: "https://github.com/glaucusec/gom",
-    },
-    image: "gom.png",
   },
 ];
 

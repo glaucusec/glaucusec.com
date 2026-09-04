@@ -13,97 +13,13 @@ const projectsData = [
     items: [
       {
         id: "1",
-        title: "Eta",
+        title: "Awesome Repos",
         description:
-          "A super-fast embedded JS template engine that supports Deno.",
-        tech: ["JavaScript", "TypeScript", "Template Engine"],
+          "A curated collection of repositories, links, payloads, blogs, and tools for pentesting and bug bounty hunting.",
+        tech: ["Security", "Pentesting", "Bug Bounty"],
         links: {
-          github: "https://github.com/eta-dev/eta",
+          github: "https://github.com/glaucusec/awesome-repos",
         },
-        image: "eta.png",
-      },
-      {
-        id: "2",
-        title: "Decline App",
-        description:
-          "A website for practicing Czech, Slovak, and Russian noun declensions.",
-        tech: ["Next.js", "React", "TypeScript"],
-        links: {
-          github: "https://github.com/glaucusec/declension-practice",
-        },
-        image: "decline.png",
-      },
-      {
-        id: "3",
-        title: "GOM",
-        description:
-          "Pip package with CLI tool to monitor GPU usage across Docker containers. A minimalistic alternative to 'nvidia-smi'.",
-        tech: ["Python", "Docker", "CLI"],
-        links: {
-          github: "https://github.com/glaucusec/gom",
-        },
-        image: "gom.png",
-      },
-    ],
-  },
-  {
-    category: "Other",
-    items: [
-      {
-        id: "4",
-        title: "BlinkBuy",
-        description: "BlinkBuy- An E-commerce Store ",
-        tech: ["Nextjs", "Tailwind", "React"],
-        links: {
-          github: "https://github.com/glaucusec/BlinkBuy",
-        },
-        image: "npm-to-yarn.png",
-      },
-      {
-        id: "5",
-        title: "ClassiMail",
-        description: "Emails with GPT-4 powered categorization 📧",
-        tech: ["Nextjs", "GPT-4o"],
-        links: {
-          github: "https://github.com/squirrellyjs/squirrelly",
-        },
-        image: "squirrelly.png",
-      },
-    ],
-  },
-  {
-    category: "Old",
-    items: [
-      {
-        id: "6",
-        title: "Chat Application",
-        description:
-          "A Chrome extension that turns your new tab page into a customizable dashboard.",
-        tech: [
-          "HTML",
-          "CSS",
-          "Bootstrap",
-          "JavaScript",
-          "Node Js",
-          "Express Js",
-          "MySQL",
-          "Sequelize",
-        ],
-        links: {
-          github: "https://github.com/glaucusec/chat-application",
-        },
-        image: "splashpad.png",
-      },
-      {
-        id: "7",
-        title: "Expense Tracker",
-        description:
-          "A Chrome extension to transform characters written in the Esperanto 'x-system' into Esperanto characters while typing.",
-        tech: ["JavaScript", "Chrome Extension"],
-        links: {
-          github: "https://github.com/glaucusec/expense-tracker",
-        },
-        image: "esperaboard.png",
       },
     ],
   },

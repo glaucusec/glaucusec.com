@@ -20,7 +20,7 @@ const instrumentSans = Instrument_Sans({
 export const metadata: Metadata = {
   title: { default: "Abhishek Baiju", template: "%s - Abhishek Baiju" },
   description:
-    "Abhishek Baiju's personal website. Web Development Intern at Vercel, studying AI and human languages at BYU.",
+    "Abhishek Baiju is a full-stack developer with two years of experience, currently working independently and open to new opportunities.",
   authors: [{ name: "Abhishek Baiju", url: "https://glaucusec.com" }],
   metadataBase: new URL("https://glaucusec.com"),
   openGraph: {
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     url: "https://glaucusec.com",
     title: "Abhishek Baiju",
     description:
-      "Web developer exploring the intersection of the web and security.",
+      "Full-stack developer with two years of experience, working independently and open to new opportunities.",
     siteName: "Abhishek Baiju",
   },
   twitter: { card: "summary_large_image", creator: "@glaucusec" },
@@ -61,6 +61,7 @@ export default function RootLayout({
               <footer className="site-footer">
                 <nav className="footer-links" aria-label="Footer navigation">
                   <Link href="/">Home</Link>
+                  <Link href="/#work-experience">Work Experience</Link>
                   <Link href="/projects">Projects</Link>
                   <Link href="/blogs">Blog</Link>
                   <Link href="https://github.com/glaucusec" target="_blank">

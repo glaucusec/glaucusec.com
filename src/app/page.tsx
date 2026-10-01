@@ -1,5 +1,6 @@
 import GithubIcon from "@/components/ui/github-icon";
 import TwitterIcon from "@/components/ui/twitter-icon";
+import { WorkExperience } from "@/components/work-experience";
 import { featuredProjects } from "@/lib/projects";
 import { allPosts } from "content-collections";
 import Image from "next/image";
@@ -36,7 +37,10 @@ export default function HomePage() {
         />
         <div className="profile-copy">
           <h1>Hey, I’m Abhishek.</h1>
-          <p>I’m a developer focused on building for the web.</p>
+          <p>
+            I’m a full-stack developer with two years of experience, currently
+            working independently and open to new opportunities.
+          </p>
           <p>
             Online, I’m usually{" "}
             <Link href="https://github.com/glaucusec">@glaucusec</Link>. I build
@@ -49,7 +53,6 @@ export default function HomePage() {
             what I learn while building, breaking, and putting things back
             together.
           </p>
-          <p>I’m currently studying AI and human languages at BYU.</p>
 
           <div className="social-row">
             <Link
@@ -71,6 +74,8 @@ export default function HomePage() {
           </div>
         </div>
       </header>
+
+      <WorkExperience />
 
       <section className="home-section">
         <div className="section-heading">

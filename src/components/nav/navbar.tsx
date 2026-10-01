@@ -7,6 +7,7 @@ import { MobileNav } from "./mobile-nav";
 
 const navigation = [
   { name: "About", href: "/#about" },
+  { name: "Work Experience", href: "/#work-experience" },
   { name: "Projects", href: "/projects" },
   { name: "Blog", href: "/blogs" },
   { name: "GitHub", href: "https://github.com/glaucusec", external: true },

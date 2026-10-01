@@ -1,4 +1,5 @@
 import { ProjectCard } from "@/components/project-card";
+import { featuredProjects } from "@/lib/projects";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,40 +8,12 @@ export const metadata: Metadata = {
     "A collection of Abhishek Baiju's projects, from featured work to experimental builds.",
 };
 
-const projectsData = [
+const projects = [
   {
     category: "Featured",
-    items: [
-      {
-        id: "1",
-        title: "Awesome Repos",
-        description:
-          "A curated collection of repositories, links, payloads, blogs, and tools for pentesting and bug bounty hunting.",
-        tech: ["Security", "Pentesting", "Bug Bounty"],
-        links: {
-          github: "https://github.com/glaucusec/awesome-repos",
-        },
-      },
-    ],
+    items: featuredProjects,
   },
 ];
-
-const borderColors = [
-  "border-sky-500/30 hover:border-sky-500/60 dark:border-sky-500/20 dark:hover:border-sky-500/40",
-  "border-emerald-500/30 hover:border-emerald-500/60 dark:border-emerald-500/20 dark:hover:border-emerald-500/40",
-  "border-amber-500/30 hover:border-amber-500/60 dark:border-amber-500/20 dark:hover:border-amber-500/40",
-  "border-purple-500/30 hover:border-purple-500/60 dark:border-purple-500/20 dark:hover:border-purple-500/40",
-  "border-pink-500/30 hover:border-pink-500/60 dark:border-pink-500/20 dark:hover:border-pink-500/40",
-  "border-orange-500/30 hover:border-orange-500/60 dark:border-orange-500/20 dark:hover:border-orange-500/40",
-];
-
-const projects = projectsData.map((section) => ({
-  ...section,
-  items: section.items.map((project, index) => ({
-    ...project,
-    borderColor: borderColors[index % borderColors.length],
-  })),
-}));
 
 export default function ProjectsPage() {
   return (

@@ -11,6 +11,16 @@ interface FeaturedProject {
 
 const featuredProjectsData: FeaturedProject[] = [
   {
+    id: "pixytalk",
+    title: "PixyTalk",
+    description:
+      "A shared customer inbox with AI assistance, business knowledge, and human takeover, starting with WhatsApp. Currently in development.",
+    tech: ["Next.js", "NestJS", "PostgreSQL", "OpenAI", "WhatsApp Cloud API"],
+    links: {
+      github: "https://github.com/glaucusec/pixytalk",
+    },
+  },
+  {
     id: "1",
     title: "Awesome Repos",
     description:

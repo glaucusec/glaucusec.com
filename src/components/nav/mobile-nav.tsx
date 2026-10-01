@@ -14,6 +14,7 @@ import { useState } from "react";
 
 const links = [
   { name: "About", href: "/#about" },
+  { name: "Work Experience", href: "/#work-experience" },
   { name: "Projects", href: "/projects" },
   { name: "Blog", href: "/blogs" },
   { name: "GitHub", href: "https://github.com/glaucusec" },

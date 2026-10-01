@@ -355,6 +355,93 @@ a {
   color: var(--muted-foreground);
   font-size: 13.5px;
 }
+.experience-section {
+  scroll-margin-top: 24px;
+}
+.experience-timeline {
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.experience-item {
+  position: relative;
+  margin-left: 6px;
+  padding: 0 0 30px 28px;
+}
+.experience-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: -12px;
+  left: 0;
+  width: 1px;
+  background: var(--border);
+}
+.experience-item::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: -5px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--background);
+}
+.experience-item:first-child::after {
+  background: var(--accent);
+}
+.experience-item:last-child {
+  padding-bottom: 0;
+}
+.experience-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.experience-heading h3 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.experience-current {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+.experience-role {
+  margin: 3px 0;
+  color: var(--lede-ink);
+  font-size: 15px;
+}
+.experience-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+.experience-highlights {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--desc-ink);
+  font-size: 14px;
+  line-height: 1.6;
+  list-style: disc;
+}
+.experience-highlights li + li {
+  margin-top: 7px;
+}
+.experience-highlights li::marker {
+  color: var(--muted-foreground);
+}
 .writing-list {
   margin: 0;
   padding: 0;
